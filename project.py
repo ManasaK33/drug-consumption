@@ -3,9 +3,8 @@
 import sys
 import pandas as pd
 import numpy as np
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-from sklearn import linear_model
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 def drop_variables(data):
     
@@ -27,19 +26,24 @@ def drop_variables(data):
         n_null = np.count_nonzero(data[column].isnull() == True)
         if n_null > 0:
             null_cols.append((column, n_null))
-    
+   
+    print(len(zero_cols))
+    print(len(non_unique_cols))
+    print(len(null_cols))
+ 
     # drop variables with 0 values
     for (column, count) in zero_cols:
+        print(column, count)
         percentage = count/len(data.index) * 100.0
         # drop variable where 30% of values are 0
-        if percentage >= 30.0:
+        if count == len(data.index):
             print('dropping %-10s # zero values: %d'%(column+',', count))
-            del data[column]
+            #del data[column]
             
     # drop redundant variables
     for (column, _) in non_unique_cols:
         print('dropping %s'%(column))
-        del data[column]
+        #del data[column]
     
     # drop missing variables
     for (column, count) in null_cols:
@@ -47,10 +51,11 @@ def drop_variables(data):
         # drop variable where 30% of values are missing
         if percentage >= 30.0:
             print('dropping %-10s # missing values: %d'%(column+',', count))
-            del data[column]
+            #del data[column]
     
 
 data = pd.read_csv('drug_consumption.csv')
+print(data.info())
 
 # consider numpy.inf as n/a value
 pd.options.mode.use_inf_as_na = True
@@ -66,10 +71,29 @@ for column in data.loc[:,'Alcohol':'VSA']:
 del data['Semer'] 
 # drop ID variable
 del data['ID']
+# drop chocolate
+del data['Choc']
 
+drug_users = []
 
+for drug in data.loc[:,'Alcohol':]:
+  # check for non-zero 0 values
+  users = np.count_nonzero(data[drug].values > 0)
+  drug_users.append((drug, users))
 
+# sort number of non zero values
+drug_users  = sorted(drug_users, key=lambda x: x[1], reverse=True)
 
-print(data.info())
+# separate users and drugs from sorted collection
+users = [user for (_, user) in drug_users]
+drugs = [drug for (drug, _) in drug_users]
 
+y_pos = np.arange(len(drug_users))
+
+plt.barh(y_pos, users, align='center', alpha=0.5)
+plt.yticks(y_pos, drugs)
+plt.xlabel('Users')
+plt.title('Drug Usage')
+
+plt.show()
 
