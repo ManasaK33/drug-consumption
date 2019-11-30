@@ -33,6 +33,113 @@ def country_map(x):
     return None
     
 
+
+def create_plot(ax, data, color='#99004f'):
+    usage = data.apply(pd.Series.value_counts, axis=0)
+    #if 0 in usage.index:
+    #    usage.drop([0], inplace=True)
+    drug = usage.iloc[:,0].name
+    usages = usage.sort_index().iloc[:,0].values
+    width = 0.05
+    xpos = np.arange(len(usage.index),dtype='float64')
+    xpos *= 0.10
+    ax.bar(xpos, usages, width=width, color=color)
+    rects = ax.patches
+    for rect, usage in zip(rects,usages):
+        x = rect.get_x() + rect.get_width()/2
+        y = rect.get_height() + 0.5
+        ax.text(x, y, usage, ha='center',va='bottom', fontsize=10)
+    
+    usage_texts = ['Never Used','Decade Ago','Last Decade', 
+                   'Last Year', 'Last Month', 
+                   'Last Week', 'Last Day']
+    ax.set_ylim(bottom=0, top=1800)
+    ax.set_xticks(xpos)
+    ax.set_xticklabels(usage_texts)
+    ax.tick_params(axis='y', labelsize=10)
+    ax.tick_params(axis ='x', labelrotation=15, labelsize=10)
+    ax.text(0.5, 0.9, drug, horizontalalignment='center', 
+            transform=ax.transAxes, fontsize=14)
+    
+                
+    '''
+    
+    xpos = np.zeros((3,7))
+    xpos[0] = np.arange(7)
+    xpos[1] = xpos[0] + 0.3
+    xpos[2] = xpos[1] + 0.3
+    print(xpos)
+    users = data.apply(lambda series: series.astype(bool).sum(),axis=0)
+    sor = users.sort_values()
+    print(sor)
+    print(type(sor))
+    
+    for drug in data:
+        value_counts = data[drug].value_counts()
+        if 0 in value_counts.index:
+            value_counts.drop([0], inplace=True)
+        value_counts.sort_index(axis=0, inplace=True)
+    '''
+        
+    #sys.exit(0)
+    return
+
+
+
+
+def create_usage_subplots(data, title, filename, groupings=1):
+    
+    drug_users = []
+    colors = ['#99004f', '#007acc', '#009900', '#e67300',
+              '#cc0000','#0000b3', '#7a00cc', '#e6e600',
+              '#2eb8b8']
+    
+    data = data.rename(columns={'Amphet':'Amphetamine', 'Amyl':'Amyl Nitrite',
+            'Benzos':'Benzodiazepine','Caff':'Caffeine','Coke':'Cocaine',
+            'Meth':'Methamphetamine'})
+    
+    print(data.info())
+    for drug in data.loc[:,'Alcohol':]:
+      # check for non-zero 0 values
+      users = np.count_nonzero(data[drug].values > 0)
+      drug_users.append((drug, users))
+    
+    # sort number of non zero values
+    drug_users = sorted(drug_users, key=lambda x: x[1], reverse=True)
+    
+    # separate users and drugs from sorted collection
+    drugs = [drug for (drug, _) in drug_users]
+    print(drugs)
+    
+    n_graphs = int(np.ceil(len(drugs)/groupings))
+    n_cols = int(math.sqrt(n_graphs))
+    n_rows = int(np.ceil(n_graphs/n_cols))
+    
+    print(len(drugs))
+    print(n_rows)
+    print(n_cols)
+    
+    fig, axs = plt.subplots(n_rows, n_cols, sharex=False, sharey=True)
+    plt.subplots_adjust(wspace=0.02)
+    color_idx = 0
+    i = 0
+    for row in range(n_rows):
+        for col in range(n_cols):
+            color_idx = (color_idx+1)%len(colors)
+            if i >= len(drugs):
+                axs[row, col].set_visible(False)
+            elif i + groupings >= len(drugs):
+                drug_data = data[drugs[i:len(drugs)]]
+                create_plot(axs[row,col], drug_data, colors[color_idx])
+            else:
+                drug_data = data[drugs[i:i+groupings]]
+                create_plot(axs[row, col], drug_data, colors[color_idx])
+            i += groupings
+    
+    fig.set_size_inches(25,25)
+    plt.show()    
+    return
+
 def create_usage_plot(data, title, filename):
 
     drug_users = []
@@ -43,10 +150,12 @@ def create_usage_plot(data, title, filename):
       drug_users.append((drug, users))
     
     # sort number of non zero values
-    drug_users  = sorted(drug_users, key=lambda x: x[1], reverse=True)
+    drug_users = sorted(drug_users, key=lambda x: x[1], reverse=True)
     
     # separate users and drugs from sorted collection
     drugs = [drug for (drug, _) in drug_users]
+    
+    print(drugs)
     
     bar_colors = ['C0','C1','C2','C3','C4','C5','C6']
     y_pos = np.arange(len(data.loc[:,'Alcohol':].columns))
@@ -84,13 +193,13 @@ def create_usage_plot(data, title, filename):
     plt.xlabel('Users')
     plt.yticks(y_pos, drugs)
     fig = plt.gcf()
-    fig.set_size_inches(20,12)
+    fig.set_size_inches(40,12)
     plt.savefig(filename)
     plt.clf()
     
     
 if __name__ == '__main__':
-
+    
     data = pd.read_csv('drug_consumption.csv')
     
     print(data.info())
@@ -111,6 +220,12 @@ if __name__ == '__main__':
     del data['ID']
     # drop chocolate
     del data['Choc']
+    
+    create_usage_subplots(data, 'x', 'y')
+    #create_plot(data.loc[:,'Alcohol':'Amyl'])
+    #sys.exit(0)
+    
+    #sys.exit(0)
     
     pd.set_option('precision', 5)
     
@@ -169,8 +284,8 @@ if __name__ == '__main__':
     
     
     create_usage_plot(male_drug.drop(['Drug User'], axis=1), 'Drug Usage for Males', 'Figure2.png')
-    create_usage_plot(female_drug.drop(['Drug User'], axis=1), 'Drug Usage for Females', 'Figure3.png')
-    create_usage_plot(data.drop(['Drug User'], axis=1), 'Drug Usage', 'Figure4.png')
+    #create_usage_plot(female_drug.drop(['Drug User'], axis=1), 'Drug Usage for Females', 'Figure3.png')
+    #create_usage_plot(data.drop(['Drug User'], axis=1), 'Drug Usage', 'Figure4.png')
 
 
 
