@@ -10,8 +10,8 @@ import matplotlib as mpl
 import math
 
 
-def drug_user(row):
-    row = row.drop(['Alcohol', 'Nicotine','Caff'])
+def is_drug_user(row):
+    #row = row.drop(['Alcohol', 'Nicotine','Caff'])
     row = row['Amphet':]
     num_zeros = (row == 0).astype(bool).sum()
     if num_zeros == row.size:
@@ -63,7 +63,7 @@ def create_plot(ax, data, color='#99004f', yticks_on=True):
 
 
 
-def create_usage_subplots(data, title, filename, groupings=1):
+def create_usage_subplots(data):
     
     colors = ['#99004f', '#007acc', '#009900', '#e67300',
               '#cc0000','#0000b3', '#7a00cc', '#e6e600',
@@ -124,12 +124,12 @@ if __name__ == '__main__':
     # drop chocolate
     del data['Choc']
     
-    create_usage_subplots(data, 'x', 'y')
+    create_usage_subplots(data)
     
     min_score = data.loc[:,'Nscore':'Cscore'].min().values.min()
     data.loc[:,'Nscore':'Cscore'] += abs(min_score)
     
-    data['Drug User'] = data.apply(drug_user, axis=1)
+    data['Drug User'] = data.drop(['Alcohol', 'Nicotine','Caff'], axis=1).apply(is_drug_user, axis=1)
     data['Gender']= data['Gender'].apply(gender_map)
     data['Country']=data['Country'].apply(country_map)
     
@@ -182,7 +182,7 @@ if __name__ == '__main__':
     
     plt.bar(xpos, bars, width=0.3, color=['C1','C2'], align='center')
     plt.xticks(xpos, ['Male', 'Female'])
-    plt.title('Drug Usage by Gender')
+    plt.title('Illegal Drug Usage by Gender')
     plt.ylabel('Users')
     fig = plt.gcf()
     fig.set_size_inches(8,6)
