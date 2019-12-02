@@ -36,6 +36,7 @@ The database contains records for 1,885 respondents. For each respondent, 12 att
 
 \begin{figure}[H]
 \caption{Illegal Drug Usage and Frequency by Gender}
+\label{fig:genders}
 \centering
 \includegraphics[scale=0.4]{gender_freq.png}
 \end{figure}
@@ -43,12 +44,14 @@ The database contains records for 1,885 respondents. For each respondent, 12 att
 
 \begin{figure}[H]
 \caption{Illegal Drug Usage by Personality Trait}
+\label{fig:traits}
 \centering
 \includegraphics[scale=0.25]{traits.png}
 \end{figure}
 
 \begin{figure}[H]
 \caption{Heatmap of Correlation Matrix}
+\label{fig:heatmap}
 \centering
 \includegraphics[scale=0.25]{heatmap.png}
 \end{figure}
@@ -61,15 +64,18 @@ The database contains records for 1,885 respondents. For each respondent, 12 att
 
 \subsubsection*{Feature Selection}
 
+To select the features for our binary classifier we consulted the pearson correlation matrix in Figure \ref{fig:heatmap}. In addition a feature selection tool from sklearn was used that determines a models features importances and removes those that fall below a certain threshold. Our analysis indicated that the features that might be best for our model were Age, Education, Country, Nscore, Escore, Oscore, Ascore, Cscore, Impulsive, and SS.
+
 \subsubsection*{Grid Search}
 
 \begin{figure}[H]
 \caption{Hyperparameter Tuning with Grid Search }
+\label{fig:gridsearch}
 \centering
 \includegraphics[scale=0.35]{gridsearch.png}
 \end{figure}
 
-We performed grid search on 30,240 random forests by varying the number of estimators and the configuration for the base estimators provided to each random forest. The exhaustive search then chose the best performing model when tested with 10-fold cross validation. This model had an F1 score of 0.844 and an accuracy of 0.913. 
+We performed grid search on 30,240 random forests by varying the number of estimators and the configuration for the base estimators provided to each random forest. The exhaustive search then chose the best performing model when tested with 10-fold cross validation. This model had an F1 score of 0.844 and an accuracy of 0.913. When the model was applied to the test set it resulted in an accuracy of 0.827.
 
 \subsection*{Clustering}
 
