@@ -13,23 +13,33 @@
 
 \section*{1. Problem Selection}
 
+For our final project, we would like to solve the problem: which personality traits (e.g., neuroticism, extraversion, openness to experience, agreeableness, conscientiousness, impulsiveness and sensation) and other factors (e.g., age, gender and education) make one susceptible to the usage of various legal and illegal drugs. These drugs include alcohol, amphetamines, amyl nitrite, benzodiazepine, cannabis, chocolate, cocaine, caffeine, crack, ecstasy, heroin, ketamine, legal highs, LSD, methadone, mushrooms, nicotine and volatile substance abuse (VSA).
+
+
 \section*{2. Data Collection}
+
+The data for our project consisted of a single dataset collected from the UCI Machine Learning Repository.
 
 \section*{3. Data Preparation}
 
+The data provided came without a header, so for ease of use with the pandas library we added a header. To allow us to perform some analysis of the dataset we needed to convert the values in the dataset to something more interpretable. For instance the values for female and male were provided as the values -0.48246 and 0.48246. We converted these into categorial variables, at least for the duration of our analysis. We also had to label encode the drug usage responses and one-hot encode the gender category for later use with classifiers.
+
 \section*{4. Data Exploration}
 
-\begin{figure}[H]
+\begin{figure}[h]
 \caption{Drug Usage}
 \centering
 \includegraphics[scale=0.7]{drugs.png}
 \end{figure}
+
+The database contains records for 1,885 respondents. For each respondent, 12 attributes are known: measurements which include NEO-FFI-R (neuroticism, extraversion, openness to experience, agreeableness, and conscientiousness), BIS-11 (impulsivity), and ImpSS (sensation seeking), level of education, age, gender, country of residence and ethnicity. Each respondent also provided their usage for 18 legal and illegal drugs, including the fictitious drug Semeron. The categories for drug usage consisted of: never used, used over a decade ago, used in the last decade, used in the last year, used in the last month, used in the last week, and used in the last day.
 
 \begin{figure}[H]
 \caption{Illegal Drug Usage and Frequency by Gender}
 \centering
 \includegraphics[scale=0.4]{gender_freq.png}
 \end{figure}
+
 
 \begin{figure}[H]
 \caption{Illegal Drug Usage by Personality Trait}
@@ -59,7 +69,7 @@
 \includegraphics[scale=0.35]{gridsearch.png}
 \end{figure}
 
-We performed grid search on 30,240 random forests by varying the number of estimators and the configuration for the base estimators provided to each random forest.\par
+We performed grid search on 30,240 random forests by varying the number of estimators and the configuration for the base estimators provided to each random forest. The exhaustive search then chose the best performing model when tested with 10-fold cross validation. This model had an F1 score of 0.844 and an accuracy of 0.913. 
 
 \subsection*{Clustering}
 
