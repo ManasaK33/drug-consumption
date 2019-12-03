@@ -1,10 +1,10 @@
 \documentclass[10pt]{article}
-\usepackage[top = 0.5in, bottom = 1.0in, left = 1.0in, right = 1.0in]{geometry}
+\usepackage[top = 0.75in, bottom = 1.0in, left = 1.0in, right = 1.0in]{geometry}
 \usepackage{float}
 \usepackage{amsmath}
 \usepackage{graphicx}
 \usepackage{indentfirst}
-\graphicspath{ {figures/} }
+\graphicspath{ {../figures/} }
 \title{CS 418 Final Project}
 \date{December 2, 2019}
 \author {Manasa Kandimalla, Shyam Patel, Carlos Antonio McNulty}
@@ -30,30 +30,48 @@ The provided dataset does not include a header. For ease of use with the Pandas 
 \caption{Drug Usage}
 \label{fig:drugs}
 \centering
-\includegraphics[scale=0.7]{drugs.png}
+\includegraphics[scale=0.6]{drugs.png}
 \end{figure}
 
 In Figure \ref{fig:drugs}, we see all 17 drugs, ordered from most frequently to least frequently used, and their corresponding usage. The drugs used by the most respondents and those used most frequently are the class of legal drugs and cannabis. The most used illegal drug is cannabis with 1,472 total users, or about 78\% of respondents. For the remaining drugs usage declined sharply with the least used drug being crack. It had a total of 258 users, or about 13.7\% of respondents. Usage for most of the drugs in the dataset followed a normal distribution.
 
-In Figure \ref{fig:genders}, we see that the dataset had a total of 859 male drug users and 726 female drug users. The most notable difference between the two genders was in their frequency of usage, rather than in the total number of drug users. Of those who were surveyed, twice as many men than women responded that they had taken a drug in the last day. We also see that most male drug users had taken a drug in the last month, and most female drug users had taken a drug sometime in the last year or later. This might suggest that, while the number of women and men that use drugs is roughly equivalent, how frequently they use these drugs may differ drastically.
-
-In Figure \ref{fig:heatmap}, we constructed a Pearson correlation heatmap that depicts the correlation of independent variables with the output variable \textit{Drug User}. This enabled us to narrow the scope of independent variables and take only the subset of relevant features in our models. The features that are most highly correlated with \textit{Drug User} are: \textit{Country}, \textit{SS}, \textit{Cscore}, \textit{Oscore}, \textit{Impulsive}, and \textit{Age}.
-
-\begin{figure}[H]
-\caption{Illegal Drug Usage and Frequency by Gender}
-\label{fig:genders}
-\centering
-\includegraphics[scale=0.4]{gender_freq.png}
-\end{figure}
-
-So anyway I started blasting...
 
 \begin{figure}[H]
 \caption{Illegal Drug Usage by Personality Trait}
 \label{fig:traits}
 \centering
-\includegraphics[scale=0.25]{traits.png}
+\includegraphics[scale=0.22]{traits.png}
 \end{figure}
+
+One of the primary focuses of our research was determining the relation between drug abuse and personality traits. We see in Figure \ref{fig:traits} that drug users had higher mean scores for both \textit{Neuroticism} and \textit{Openness}. These are both characteristics we might except from an average drug user. These users also scored lower on \textit{Extraversion}, \textit{Agreeableness}, and \textit{Conscientiousness}. We analyzed these differences and found them to be statistically significant. Our p-values reflect one-sided t-tests. The two alternative hypotheses for the one-sided tests are that the mean drug user score is greater than the non-user score, and that the mean is less. \textit{Neuroticism} and \textit{Openness} can be considered right-tailed t-tests and the remaining traits left-sided t-tests. These p-values can be seen below in Table \ref{fig:pvalues}.
+
+\begin{table}[H]
+\centering
+\caption{t-statistics and p-values for Figure \ref{fig:traits}}
+\label{fig:pvalues}
+\begin{tabular}{|l|l|l|}
+\hline
+       & t-statistic         & p-value\\ \hline
+Nscore & 6.3434   & 2.6924e-10  \\ \hline
+Escore & -3.4179  & 0.0003  \\ \hline
+Oscore & 13.2261  & 1.8035e-34 \\ \hline
+Ascore & -6.3017  & 1.8286e-10 \\ \hline
+Cscore & -12.7530 & 1.2412e-32 \\ \hline
+\end{tabular}
+\end{table}
+
+In Figure \ref{fig:genders}, we see that the dataset had a total of 859 male drug users and 726 female drug users. The most notable difference between the two genders was in their frequency of usage, rather than in the total number of drug users. Of those who were surveyed, twice as many men than women responded that they had taken a drug in the last day. We also see that most male drug users had taken a drug in the last month, and most female drug users had taken a drug sometime in the last year or later. This might suggest that, while the number of women and men that use drugs is roughly equivalent, how frequently they use these drugs may differ drastically.
+
+
+\begin{figure}[H]
+\caption{Illegal Drug Usage and Frequency by Gender}
+\label{fig:genders}
+\centering
+\includegraphics[scale=0.45]{gender_freq.png}
+\end{figure}
+
+In Figure \ref{fig:heatmap}, we constructed a Pearson correlation heatmap that depicts the correlation of independent variables with the output variable \textit{Drug User}. This enabled us to narrow the scope of independent variables and take only the subset of relevant features in our models. The features that are most highly correlated with \textit{Drug User} are: \textit{Country}, \textit{SS}, \textit{Cscore}, \textit{Oscore}, \textit{Impulsive}, and \textit{Age}.
+
 
 \begin{figure}[H]
 \caption{Heatmap of Correlation Matrix}
@@ -79,14 +97,14 @@ Next, we predicted the class labels for the test set using the decision tree cla
 \includegraphics[scale=0.4]{conf_matrix_dt.png}
 \end{figure}
 
-\subsection*{k-nearest Neighbors Classifier}
+\subsection*{k-Nearest Neighbors Classifier}
 
 To determine whether or not we could improve upon the performance of the decision tree classifier, we used the same relevant features and standardized training data to build a k-nearest neighbors classifier. Using 10–fold cross validation, we found the mean accuracy of the k-nearest neighbors classifier to be 80.9\% and the mean F1 score to be 88.8\%, which indicates a higher performance than that of the decision tree classifier. We predicted the class labels for the test set using the k-nearest neighbors classifier and plotted the corresponding confusion matrix (see Figure \ref{fig:conf_matrix_knn}).
 
 Our new model performed noticeably better. In particular, 423 respondents who are actually drug users were correctly predicted to be users, and 25 respondents who are not drug users were correctly predicted to be non-users. On the other hand, 44 respondents who are actually drug users were incorrectly predicted to be non-users, and 74 respondents who are not drug users were incorrectly predicted to be users. As such, the k-nearest neighbors classifier predicts drug usage with a precision of 85.1\% and a recall of 90.6\%. This is a slightly lower precision, but significantly higher recall than the decision tree classifier, which is explained by the higher number of FPs but lower number of FNs.
 
 \begin{figure}[H]
-\caption{Confusion Matrix of k-nearest Neighbors Classifier}
+\caption{Confusion Matrix of k-Nearest Neighbors Classifier}
 \label{fig:conf_matrix_knn}
 \centering
 \includegraphics[scale=0.4]{conf_matrix_knn.png}
@@ -127,7 +145,7 @@ We performed grid search on 30,240 random forests by varying the number of estim
 \caption{Cluster with all features(Ascore VS Coke) }
 \label{fig:AscoreVsCoke}
 \centering
-\includegraphics[scale=0.35]{figures/cluster1-AscorevsCoke.png}
+\includegraphics[scale=0.35]{cluster1-AscorevsCoke.png}
 \end{figure}
 
 \begin{figure}[H]
@@ -157,5 +175,6 @@ We performed grid search on 30,240 random forests by varying the number of estim
 \includegraphics[scale=0.5]{Cluster_Table.png}
 \end{figure}
 
+The best performing binary classifier was the random forest classifier with a mean accuracy of 91.2\% when tested with 10-fold cross validation. On the test set, it had an accuracy of 82.7\% and an F1 score of 90.2\%. For the binary classifiers an obstacle they had to overcome was the large class imbalance caused by the popularity of cannabis in this dataset. Over 78\% of respondents have used cannabis at some time in their lives. We are not surprised that the random forest outperformed the decision tree on this dataset as the likelihood for overfitting seems high. We are satisfied with our model's ability to predict drug usage by using personality traits and other characteristics.
     
 \end{document}
