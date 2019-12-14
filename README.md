@@ -11,3 +11,8 @@ Manasa Kandimalla | Clustering, data preparation, report, slides
 * [train_data.csv](train_data.csv) - training data
 * [test_data.csv](test_data.csv) - testing data
 
+![drugs](figures/drugs.png)
+
+![genders](figures/gender_freq.png)
+
+![personality](figures/traits.png)
