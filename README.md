@@ -1,4 +1,4 @@
-# CS418 Final Project
+# Drug Consumption Analysis Using Random Forest
 ## Members:
 Name | NetID | UIN | Contributions
 ------------ | ------------- | ------------- | -------------
