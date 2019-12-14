@@ -1,7 +1,7 @@
 # Drug Consumption Analysis Using Random Forest
 ## Members:
 Name | Contributions
------------- | ------------- | ------------- | -------------
+------------ | -------------
 Shyam Patel | Classification, correlation heatmap, report, slides
 Carlos McNulty | Random Forest, data exploration, report, slides
 Manasa Kandimalla | Clustering, data preparation, report, slides
